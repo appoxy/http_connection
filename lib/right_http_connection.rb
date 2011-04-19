@@ -303,7 +303,9 @@ them.
     end
 
     def blank?(var)
-      if var.respond_to?(:empty?) && var.respond_to?(:strip)
+      if var.respond_to?(:blank?)
+        var.blank?
+      elsif var.respond_to?(:empty?) && var.respond_to?(:strip)
         var.empty? or var.strip.empty?
       elsif var.respond_to?(:empty?)
         var.empty?
