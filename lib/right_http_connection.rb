@@ -227,7 +227,7 @@ them.
     # Returns true if we are receiving EOFs during last @params[:http_connection_retry_delay] seconds
     # and there were no successful response from server
     def raise_on_eof_exception?
-      @@eof[@server].blank? ? false : ((Time.now.to_i-@params[:http_connection_retry_delay]) > @@eof[@server].last.to_i)
+      blank?(@@eof[@server]) ? false : ((Time.now.to_i-@params[:http_connection_retry_delay]) > @@eof[@server].last.to_i)
     end
 
     # Reset a list of EOFs for this server.
@@ -300,6 +300,16 @@ them.
       end
       # open connection
       @http.start
+    end
+
+    def blank?(var)
+      if var.respond_to?(:empty?) && var.respond_to?(:strip)
+        var.empty? or var.strip.empty?
+      elsif var.respond_to?(:empty?)
+        var.empty?
+      else
+        !var
+      end
     end
 
     public
@@ -406,7 +416,7 @@ them.
 
     def finish(reason = '')
       if @http && @http.started?
-        reason = ", reason: '#{reason}'" unless reason.blank?
+        reason = ", reason: '#{reason}'" unless blank?(reason)
         @logger.info("Closing #{@http.use_ssl? ? 'HTTPS' : 'HTTP'} connection to #{@http.address}:#{@http.port}#{reason}")
         @http.finish
       end
