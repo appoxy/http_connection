@@ -227,7 +227,7 @@ them.
     # Returns true if we are receiving EOFs during last @params[:http_connection_retry_delay] seconds
     # and there were no successful response from server
     def raise_on_eof_exception?
-      @@eof[@server].blank? ? false : ((Time.now.to_i-@params[:http_connection_retry_delay]) > @@eof[@server].last.to_i)
+      self.class.blank?(@@eof[@server]) ? false : ((Time.now.to_i-@params[:http_connection_retry_delay]) > @@eof[@server].last.to_i)
     end
 
     # Reset a list of EOFs for this server.
@@ -406,7 +406,7 @@ them.
 
     def finish(reason = '')
       if @http && @http.started?
-        reason = ", reason: '#{reason}'" unless reason.blank?
+        reason = ", reason: '#{reason}'" unless self.class.blank?(reason)
         @logger.info("Closing #{@http.use_ssl? ? 'HTTPS' : 'HTTP'} connection to #{@http.address}:#{@http.port}#{reason}")
         @http.finish
       end
@@ -414,6 +414,28 @@ them.
 
     def close(reason='')
       finish
+    end
+
+    def self.blank?(obj)
+      case obj
+      when NilClass, FalseClass
+        true
+      when TrueClass, Numeric
+        false
+      when Array, Hash
+        obj.empty?
+      when String
+        obj.empty? || obj.strip.empty?
+      else
+        # "", "   ", nil, [], and {} are blank
+        if obj.respond_to?(:empty?) && obj.respond_to?(:strip)
+          obj.empty? or obj.strip.empty?
+        elsif obj.respond_to?(:empty?)
+          obj.empty?
+        else
+          !obj
+        end
+      end
     end
 
     # Errors received during testing:
