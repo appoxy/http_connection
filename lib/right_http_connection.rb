@@ -286,7 +286,7 @@ them.
         @logger.info("Using #{proxy_host}:#{proxy_port} proxy for connection")
       end
 
-      if @protocol == "https" && ENV['http_proxy']
+      if @protocol == "http" && ENV['http_proxy']
         proxy_host, proxy_port = ENV['http_proxy'].gsub(/^http(s?):\/\//, '').split(':')
         @http = Net::HTTP::Proxy(proxy_host, proxy_port).new(@server, @port)
         @logger.info("Using #{proxy_host}:#{proxy_port} proxy for connection")
