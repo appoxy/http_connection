@@ -276,7 +276,7 @@ them.
       @port     = request_params[:port]
       @protocol = request_params[:protocol]
 
-      @logger.info("Opening new #{@protocol.upcase} connection to #@server:#@port")
+      @logger.debug("Opening new #{@protocol.upcase} connection to #@server:#@port")
       @http              = Net::HTTP.new(@server, @port)
       @http.open_timeout = @params[:http_connection_open_timeout]
       @http.read_timeout = @params[:http_connection_read_timeout]
@@ -407,7 +407,7 @@ them.
     def finish(reason = '')
       if @http && @http.started?
         reason = ", reason: '#{reason}'" unless self.class.blank?(reason)
-        @logger.info("Closing #{@http.use_ssl? ? 'HTTPS' : 'HTTP'} connection to #{@http.address}:#{@http.port}#{reason}")
+        @logger.debug("Closing #{@http.use_ssl? ? 'HTTPS' : 'HTTP'} connection to #{@http.address}:#{@http.port}#{reason}")
         @http.finish
       end
     end
