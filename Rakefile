@@ -20,6 +20,7 @@ begin
         gemspec.authors = ["Travis Reeder", "RightScale"]
         gemspec.files = FileList['lib/**/*.rb']
     end
+    Jeweler::GemcutterTasks.new
 rescue LoadError
     puts "Jeweler not available. Install it with: sudo gem install jeweler2"
 end
