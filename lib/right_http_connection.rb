@@ -134,8 +134,11 @@ them.
       @http                                  = nil
       @server                                = nil
       @logger                                = get_param(:logger) ||
-          (RAILS_DEFAULT_LOGGER if defined?(RAILS_DEFAULT_LOGGER)) ||
-          Logger.new(STDOUT)
+          (RAILS_DEFAULT_LOGGER if defined?(RAILS_DEFAULT_LOGGER))
+      unless @logger
+        @logger = Logger.new(STDOUT)
+        @logger.level = Logger::INFO
+      end
     end
 
     def get_param(name)
