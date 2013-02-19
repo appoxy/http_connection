@@ -1,10 +1,4 @@
 require 'rubygems'
-require 'rake'
-require 'rake/clean'
-require 'rake/testtask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
 require 'fileutils'
 include FileUtils
 require File.join(File.dirname(__FILE__), 'lib', 'right_http_connection')
