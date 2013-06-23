@@ -281,6 +281,20 @@ them.
 
       @logger.debug("Opening new #{@protocol.upcase} connection to #@server:#@port")
       @http              = Net::HTTP.new(@server, @port)
+
+      # Support HTTP and HTTPS proxies
+      if @protocol == "https" && ENV['https_proxy']
+        proxy_host, proxy_port = ENV['https_proxy'].gsub(/^http(s?):\/\//, '').split(':')
+        @http = Net::HTTP::Proxy(proxy_host, proxy_port).new(@server, @port)
+        @logger.info("Using #{proxy_host}:#{proxy_port} proxy for connection")
+      end
+
+      if @protocol == "https" && ENV['http_proxy']
+        proxy_host, proxy_port = ENV['http_proxy'].gsub(/^http(s?):\/\//, '').split(':')
+        @http = Net::HTTP::Proxy(proxy_host, proxy_port).new(@server, @port)
+        @logger.info("Using #{proxy_host}:#{proxy_port} proxy for connection")
+      end
+
       @http.open_timeout = @params[:http_connection_open_timeout]
       @http.read_timeout = @params[:http_connection_read_timeout]
 
